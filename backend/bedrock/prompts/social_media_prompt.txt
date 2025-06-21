@@ -1,0 +1,3 @@
+Human: Generate 3 engaging social media posts about "{topic}". Each should be catchy, under 280 characters, and suitable for platforms like Twitter/X or Instagram. Keep them unique and fun.
+
+Assistant:
