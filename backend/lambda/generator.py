@@ -5,7 +5,7 @@ import os
 bedrock = boto3.client('bedrock-runtime', region_name=os.getenv('MY_AWS_REGION', 'ap-south-1'))
 
 def generate_posts(topic):
-    prompt_file = os.path.join(os.path.dirname(__file__), '..', 'bedrock', 'prompts', 'social_media_prompt.txt')
+    prompt_file = os.path.join(os.path.dirname(__file__), 'prompts', 'social_media_prompt.txt')
     
     with open(prompt_file, 'r') as f:
         prompt_template = f.read()

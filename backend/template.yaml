@@ -1,27 +1,30 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AI-Powered Social Media Post Generator
+
 Resources:
   MyApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: Dev
       Cors:
-        AllowMethods: '''POST'''
-        AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
-        AllowOrigin: '''*'''
+        AllowMethods: "'POST'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
   SocialMediaPostFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: SocialMediaPostFunction
-      Handler: lambda.main.lambda_handler
+      CodeUri: lambda/
+      Handler: main.lambda_handler
       Runtime: python3.12
       Architectures:
-      - x86_64
+        - x86_64
       MemorySize: 512
       Timeout: 30
       Policies:
-      - AmazonBedrockFullAccess
+        # - AmazonBedrockFullAccess
+        - AmazonBedrockInvokePolicy
       Environment:
         Variables:
           MY_AWS_REGION: ap-south-1
@@ -31,12 +34,13 @@ Resources:
           Properties:
             Path: /generate
             Method: POST
-            RestApiId:
-              Ref: MyApi
-    Metadata:
-      SamResourceId: SocialMediaPostFunction
-Outputs:
-  MyFunctionUrlEndpoint:
-    Description: API Gateway endpoint URL
-    Value:
-      Fn::GetAtt: SocialMediaPostFunction.FunctionUrl
+            RestApiId: !Ref MyApi
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowMethods:
+            - POST
+          AllowHeaders:
+            - "*"
