@@ -1,17 +1,25 @@
-# social-media-post-generator
+# AutoPost.AI - Smart Social Media Post Generator
 Content creators and marketers often struggle with coming up with fresh, engaging posts for platforms like Instagram, Twitter/X, LinkedIn, or Facebook. Writing catchy captions and post ideas manually can be time-consuming.
 
-## Command Instructions to run
+## Deployment & Local Testing Steps
 
-### cloud
+### Install AWS SAM CLI
+
+    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html
+
+### Build the app
 
     sam build
+    
+
+### Test locally
+
+    sudo sam local start-api
+
+### Deploy to AWS
+
     sam deploy --guided
 
-### local
-
-    sam build
-    sam local invoke SocialMediaPostFunction -e event.json
 
 ## Inspiration
 

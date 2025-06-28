@@ -1,11 +1,11 @@
 import './styles.css';
-import PostGenerator from './components/PostGenerator';
+import AutoPostAI from './components/PostGenerator';
 
 function App() {
   return (
     <div className="container">
       <h1>Social Media Post Generator</h1>
-      <PostGenerator />
+      <AutoPostAI />
     </div>
   );
 }
