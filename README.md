@@ -20,6 +20,9 @@ Content creators and marketers often struggle with coming up with fresh, engagin
 
     sam deploy --guided
 
+### Delete the deployments
+
+    sam delete
 
 ## Inspiration
 
