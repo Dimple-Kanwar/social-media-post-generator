@@ -11,7 +11,7 @@ export default function AutoPostAI() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const response = await fetch("https://zfdnpgjqh6.execute-api.ap-south-1.amazonaws.com/Prod/generate-post", {
+      const response = await fetch(process.env.VITE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),

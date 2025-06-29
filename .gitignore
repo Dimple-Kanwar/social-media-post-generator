@@ -27,5 +27,5 @@ boto3_layer.zip
 .venv
 .aws-sam
 python
-
+.env
 
