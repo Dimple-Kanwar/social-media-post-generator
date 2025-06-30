@@ -1,77 +1,137 @@
-# AutoPost.AI - Smart Social Media Post Generator
-Content creators and marketers often struggle with coming up with fresh, engaging posts for platforms like Instagram, Twitter/X, LinkedIn, or Facebook. Writing catchy captions and post ideas manually can be time-consuming.
+# AutoPost.AI 🚀
 
-## Deployment & Local Testing Steps
+Your smart social media content assistant ✨
 
-### Install AWS SAM CLI
+AutoPost.AI is a web application that generates social media posts using AI, allows users to connect their Twitter/LinkedIn accounts, and optionally auto-posts the content to their profiles.
 
-    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html
+---
 
-### Build the app
+## 🌐 Live Demo
 
+👉 https://social-media-post-generator-fv95zmumh-dimple-kanwars-projects.vercel.app/
+
+---
+
+## 🧠 Features
+
+- Generate engaging social posts using AI
+- Connect Twitter, Discord (coming soon) and LinkedIn(coming soon) via OAuth
+- Copy to clipboard or post directly to Twitter(Need twitter upgrade, coming soon)
+- Cookie-based token storage
+- Real-time UI feedback (snackbars, tooltips)
+- Built using AWS Lambda & SAM
+
+---
+
+## 🛠️ Tech Stack
+
+| Frontend              | Backend                        | AWS Services                      |
+|----------------------|--------------------------------|------------------------------------|
+| React + MUI + Vite   | Python + Requests      | Lambda, API Gateway, DynamoDB     |
+| Tailwind/MUI for UI  | Deployed via AWS SAM           | CloudWatch (logs)                 |
+
+---
+
+## 🧩 Architecture
+
+    [ Vercel (Frontend: React/MUI) ] <==> [ API Gateway ] ==> [ AWS Lambda Functions ] <==> [ DynamoDB (session store) ]
+
+---
+
+## 📦 Folder Structure
+
+      SOCIAL-MEDIA-POST-GENERATOR/
+      ├── backend/                    # AWS Lambda backend
+      │   ├── app.py
+      │   ├── twitter.py              # twitter related functions
+      │   ├── linkedin_callback.py
+      │   ├── generator.py            # handler for post generation
+      │   ├── requirements.txt
+      │   ├── template.yaml           # SAM template
+      │   └── samconfig.toml
+      ├── public/
+      │   └── autopost-ai-logo.png    # app logo
+      ├── src/
+      │   ├── assets/
+      │   │   └── react.svg
+      │   ├── components/
+      │   │   ├── ConnectSocials.jsx
+      │   │   ├── PostActions.jsx
+      │   │   ├── PostGenerator.jsx
+      │   │   └── TwitterCallback.jsx
+      │   ├── App.jsx
+      │   ├── main.jsx
+      │   ├── App.css
+      │   ├── index.css
+      │   └── styles.css
+      ├── .env.test
+      ├── .env
+      ├── .gitignore
+      ├── index.html
+      ├── vite.config.js
+      ├── package.json
+      ├── package-lock.json
+      └── README.md
+
+
+---
+
+## 🚀 How We Used AWS Lambda
+
+This app uses **AWS Lambda** to build a fully serverless backend:
+
+| Lambda Function        | Description                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| `generate-post`        | Accepts a prompt and returns AI-generated post ideas                        |
+| `twitter-login`        | Starts the OAuth 1.0a login flow with Twitter                               |
+| `twitter-callback`     | Handles the OAuth verifier and stores tokens in DynamoDB                   |
+| `post-to-twitter`      | Posts a tweet using saved access tokens                                    |
+
+These are deployed via **AWS SAM** using the following template:
+
+```yaml
+Resources:
+  GeneratePostFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.generate_post
+      Runtime: python3.11
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /generate-post
+            Method: POST            
+```
+            
+## 🧪 How to Test Locally
+
+### Backend
+
+    cd backend
     sam build
-    
+    sam local start-api
 
-### Test locally
+### Frontend
 
-    sudo sam local start-api
+    npm install
+    npm run dev
 
-### Deploy to AWS
+Create a .env file with:
 
-    sam deploy --guided
+    cp .env.test .env
 
-### Delete the deployments
 
-    sam delete
+## 🔐 OAuth Setup Notes
 
-## Inspiration
+Twitter: You must whitelist your callback URL in the Twitter developer portal.
 
-In today’s fast-paced digital world, content creators and marketers are under constant pressure to produce fresh, engaging content. Whether it's for Instagram, Twitter/X, LinkedIn, or Facebook, coming up with catchy captions and post ideas can be time-consuming and repetitive.
+LinkedIn: Approved redirect URI must match exactly.
 
-I wanted to solve this problem by building a tool that uses AI to generate creative, ready-to-use social media posts , helping users save time while staying consistent and engaging.
+## 📜 License
 
-Inspired by the power of large language models (LLMs) and serverless computing, I built an application that combines AWS Lambda , Amazon Bedrock , and modern cloud architecture to deliver a scalable, intelligent solution.
+MIT
 
-## What it does
+## 👩‍💻 Author
 
-An end-to-end AI-powered social media post generator that:
-
-- Accepts a topic or theme from the user
-- Uses Amazon Bedrock (with models like Anthropic Claude) to generate multiple creative posts
-- Returns results via an API Gateway endpoint
-- Has a React frontend for easy interaction
-- Is fully serverless , scalable, and modular
-
-The project includes:
-- A clean folder structure with modular Python code
-- An AWS SAM template for infrastructure-as-code
-- A React frontend for user-friendly input and output
-- Local testing using sam local
-
-## How we built it
-
-### Backend (AWS Lambda + AI)
-
-- Used AWS Lambda as the core service to handle incoming requests.
-- Integrated with Amazon Bedrock to generate high-quality text using LLMs.
-- Implemented modular code (main.py, validator.py, generator.py, response.py) for better maintainability.
-- Used AWS SAM CLI to build and deploy the serverless stack.
-
-### Frontend (React)
-- Created a simple UI using Vite + React .
-- Connected it to the Lambda API to send topics and display generated posts.
-- Styled with basic CSS for responsiveness and readability.
-
-### Deployment & DevOps
-- Defined infrastructure using AWS SAM template .
-- Enabled local development and testing with sam build and sam local invoke.
-- Used CloudFormation stacks for managing AWS resources.
-
-## What we learned
-
-- Serverless architecture is powerful and cost-effective for small to medium-scale apps.
-- Modular Python code makes Lambda functions easier to test, debug, and scale.
-- Amazon Bedrock makes it incredibly easy to integrate advanced AI capabilities into applications.
-- Local testing with sam local helps catch issues before deployment.
-- Managing IAM permissions is crucial when working with AWS services — especially when deploying via CloudFormation.
-
+Dimple Kanwar

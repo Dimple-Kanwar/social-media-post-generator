@@ -2,6 +2,26 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: SMPGApi
+      StageName: Prod
+      Cors:
+        AllowMethods: "'OPTIONS,POST'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+  TwitterOAuthSessionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TwitterOAuthSessions
+      AttributeDefinitions:
+        - AttributeName: oauth_token
+          AttributeType: S
+      KeySchema:
+        - AttributeName: oauth_token
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
   GeneratePostFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -30,3 +50,80 @@ Resources:
           Properties:
             Path: /generate-post
             Method: options
+  LinkedInCallbackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: linkedin_callback.lambda_handler
+      Runtime: python3.12
+      CodeUri: ./
+      Events:
+        Callback:
+          Type: Api
+          Properties:
+            Path: /auth/callback/linkedin
+            Method: GET
+      Environment:
+        Variables:
+          LINKEDIN_CLIENT_ID: linkedin_client_id_here
+          LINKEDIN_CLIENT_SECRET: linkedin_client_secret_here
+          LINKEDIN_REDIRECT_URI: linkedin_redirect_uri_here
+  TwitterLoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: TwitterLogin
+      Handler: twitter.twitter_login
+      Runtime: python3.12
+      Events:
+        TwitterLogin:
+          Type: Api
+          Properties:
+            Path: /auth/twitter
+            Method: GET
+      Environment:
+        Variables:
+          TWITTER_CLIENT_KEY: twitter_api_key_here
+          TWITTER_CLIENT_SECRET: twitter_api_secret_here
+          TWITTER_CALLBACK_URL: twitter_callback_url_here
+          SESSION_TABLE_NAME: TwitterOAuthSessions
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: TwitterOAuthSessions
+  TwitterCallbackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: TwitterCallback
+      Handler: twitter.twitter_callback
+      Runtime: python3.12
+      Events:
+        TwitterCallback:
+          Type: Api
+          Properties:
+            Path: /auth/callback/twitter
+            Method: GET
+      Environment:
+        Variables:
+          TWITTER_CLIENT_KEY: twitter_api_key_here
+          TWITTER_CLIENT_SECRET: twitter_api_secret_here
+          FRONTEND_URL: "frontend_url_here"
+          SESSION_TABLE_NAME: TwitterOAuthSessions
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: TwitterOAuthSessions
+  PostToTwitterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PostToTwitter
+      Handler: twitter.post_to_twitter
+      Runtime: python3.12
+      Events:
+        PostToTwitter:
+          Type: Api
+          Properties:
+            Path: /post-to-twitter
+            Method: ANY
+            RestApiId: !Ref ApiGateway  # Reference the API below
+
+      Environment:
+        Variables:
+          TWITTER_CLIENT_KEY: twitter_api_key_here
+          TWITTER_CLIENT_SECRET: twitter_api_secret_here
