@@ -8,7 +8,7 @@ AutoPost.AI is a web application that generates social media posts using AI, all
 
 ## 🌐 Live Demo
 
-👉 https://social-media-post-generator-fv95zmumh-dimple-kanwars-projects.vercel.app/
+👉 https://social-media-post-generator-dimple-kanwars-projects.vercel.app/
 
 ---
 
