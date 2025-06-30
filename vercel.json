@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/auth/callback/twitter",
+      "destination": "/index.html"
+    }
+  ]
+}
