@@ -106,6 +106,8 @@ Resources:
             
 ## 🧪 How to Test Locally
 
+Update the environment variables in the template.yaml file.
+
 ### Backend
 
     cd backend
